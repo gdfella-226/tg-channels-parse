@@ -25,15 +25,17 @@ def get_last_message(api_id: int, api_hash: str, links: list):
 
 
 def get_api_params():
-    with open('./config/config', 'r') as cfg_file:
+    with open('./config/api', 'r') as cfg_file:
         lines = cfg_file.readlines()
         for line in lines:
             if line.split('=')[0] == 'api_hash':
                 api_hash = line.split('=')[1]
             if line.split('=')[0] == 'api_id':
                 api_id = line.split('=')[1]
-        if api_hash and api_id:
-            return {'api_id': int(api_id), 'api_hash': api_hash}
+            if line.split('=')[0] == 'token':
+                token = line.split('=')[1]
+        if api_hash and api_id and token:
+            return {'api_id': int(api_id), 'api_hash': api_hash, 'token': token}
 
 
 if __name__ == "__main__":
@@ -44,5 +46,5 @@ if __name__ == "__main__":
     with open('./config/links', 'r') as links_file_r:
         links = links_file_r.readlines()
         res = get_last_message(api_id, api_hash, links)
-    with codecs.open("messages.json", "w", "utf-16") as outfile:
+    with codecs.open("./tmp/messages.json", "w", "utf-16") as outfile:
         dump(res, outfile, ensure_ascii=False)
